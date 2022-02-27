@@ -1,8 +1,9 @@
-package models
+package googleNews
 
 import (
 	"encoding/xml"
 	"fmt"
+	"github.com/TomRomeo/googleNews/pkg/models"
 	"io/ioutil"
 	"net/http"
 	url2 "net/url"
@@ -33,7 +34,7 @@ func (c *GoogleNews) languageAndRegionUrl() string {
 }
 
 // SearchTopic queries the /topics endpoint for the given topic
-func (c *GoogleNews) SearchTopic(topic Topic) (*[]Article, error) {
+func (c *GoogleNews) SearchTopic(topic models.Topic) (*[]models.Article, error) {
 	url := fmt.Sprintf("%stopics/%s?%s", c.baseUrl, string(topic), c.languageAndRegionUrl())
 	res, err := http.Get(url)
 	if err != nil {
@@ -46,9 +47,9 @@ func (c *GoogleNews) SearchTopic(topic Topic) (*[]Article, error) {
 		return nil, err
 	}
 
-	var articles []Article
+	var articles []models.Article
 
-	var xmlRes RssRes
+	var xmlRes models.RssRes
 
 	if err := xml.Unmarshal(data, &xmlRes); err != nil {
 		return nil, err
@@ -60,7 +61,7 @@ func (c *GoogleNews) SearchTopic(topic Topic) (*[]Article, error) {
 
 // SearchPeriod enables searching for a query in a given time period
 // example: period: 7d - search query in articles of the last 7 days
-func (c *GoogleNews) SearchPeriod(searchTerm string, period string) (*[]Article, error) {
+func (c *GoogleNews) SearchPeriod(searchTerm string, period string) (*[]models.Article, error) {
 	searchTerm = url2.QueryEscape(searchTerm)
 
 	url := fmt.Sprintf("%ssearch?q=%s+when:%s&%s", c.baseUrl, searchTerm, period, c.languageAndRegionUrl())
@@ -75,9 +76,9 @@ func (c *GoogleNews) SearchPeriod(searchTerm string, period string) (*[]Article,
 		return nil, err
 	}
 
-	var articles []Article
+	var articles []models.Article
 
-	var xmlRes RssRes
+	var xmlRes models.RssRes
 
 	if err := xml.Unmarshal(data, &xmlRes); err != nil {
 		return nil, err
@@ -89,7 +90,7 @@ func (c *GoogleNews) SearchPeriod(searchTerm string, period string) (*[]Article,
 
 // SearchTimeframe is similar to SearchPeriod, making it possible to search between two dates
 // dates should have the format: 2020-06-02
-func (c *GoogleNews) SearchTimeframe(searchTerm string, after, before string) (*[]Article, error) {
+func (c *GoogleNews) SearchTimeframe(searchTerm string, after, before string) (*[]models.Article, error) {
 	searchTerm = url2.QueryEscape(searchTerm)
 
 	url := fmt.Sprintf("%ssearch?q=%s+after:%s+before:%s&%s", c.baseUrl, searchTerm, after, before, c.languageAndRegionUrl())
@@ -104,9 +105,9 @@ func (c *GoogleNews) SearchTimeframe(searchTerm string, after, before string) (*
 		return nil, err
 	}
 
-	var articles []Article
+	var articles []models.Article
 
-	var xmlRes RssRes
+	var xmlRes models.RssRes
 
 	if err := xml.Unmarshal(data, &xmlRes); err != nil {
 		return nil, err
@@ -117,7 +118,7 @@ func (c *GoogleNews) SearchTimeframe(searchTerm string, after, before string) (*
 }
 
 // Search let's you retrieve articles from a custom search query
-func (c *GoogleNews) Search(searchTerm string) (*[]Article, error) {
+func (c *GoogleNews) Search(searchTerm string) (*[]models.Article, error) {
 	searchTerm = url2.QueryEscape(searchTerm)
 
 	url := fmt.Sprintf("%ssearch?q=%s&%s", c.baseUrl, searchTerm, c.languageAndRegionUrl())
@@ -132,9 +133,9 @@ func (c *GoogleNews) Search(searchTerm string) (*[]Article, error) {
 		return nil, err
 	}
 
-	var articles []Article
+	var articles []models.Article
 
-	var xmlRes RssRes
+	var xmlRes models.RssRes
 
 	if err := xml.Unmarshal(data, &xmlRes); err != nil {
 		return nil, err
@@ -145,7 +146,7 @@ func (c *GoogleNews) Search(searchTerm string) (*[]Article, error) {
 }
 
 // TopNews returns the top articles based on the configured region and language
-func (c *GoogleNews) TopNews() (*[]Article, error) {
+func (c *GoogleNews) TopNews() (*[]models.Article, error) {
 
 	url := fmt.Sprintf("%snews?%s", c.baseUrl, c.languageAndRegionUrl())
 	res, err := http.Get(url)
@@ -159,9 +160,9 @@ func (c *GoogleNews) TopNews() (*[]Article, error) {
 		return nil, err
 	}
 
-	var articles []Article
+	var articles []models.Article
 
-	var xmlRes RssRes
+	var xmlRes models.RssRes
 
 	if err := xml.Unmarshal(data, &xmlRes); err != nil {
 		return nil, err

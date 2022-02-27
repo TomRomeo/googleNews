@@ -1,6 +1,7 @@
-package models
+package googleNews
 
 import (
+	"github.com/TomRomeo/googleNews/pkg/models"
 	"strings"
 	"testing"
 	"time"
@@ -86,7 +87,7 @@ func TestGoogleNews_SearchTopic(t *testing.T) {
 
 	cl := New("en", "US")
 
-	articles, err := cl.SearchTopic(BusinessTopic)
+	articles, err := cl.SearchTopic(models.BusinessTopic)
 	if err != nil {
 		t.Errorf("SearchTopic() returned an error: %s", err)
 	}
